@@ -77,6 +77,7 @@ scripts/  00_build_selection.py  -> data/manifest/*  (identity table, source of 
           05_validate.sh         -> data/validation/     (dciodvfy/dcentvfy logs)
           06_submit_cstore.py    (dcmsend, primary)
           07_submit_stow.py      (STOW-RS, fallback)
+          08_verify_submission.py (QIDO-RS: confirm what landed vs the manifest)
           archives.json          (archive STORE endpoints + contacts, parsed from xlsx/docs)
 data/     manifest/, idc_original/, submission/, validation/
 .venv/    uv-managed (Python 3.12); see requirements.txt
@@ -100,6 +101,7 @@ data/     manifest/, idc_original/, submission/, validation/
   .venv/bin/python scripts/04_fix_consistency.py         # dcentvfy consistency fixes
   scripts/05_validate.sh                                 # must be 0 errors
   .venv/bin/python scripts/06_submit_cstore.py <archive> # e.g. proscia
+  .venv/bin/python scripts/08_verify_submission.py <archive>  # confirm it landed
   ```
 - Download scopes: `--core` (9 objects, ~3.3 GB), `--full` (11, ~55 GB),
   `--uids ...`. The 52 GB fluorescence study is `--full`-only.

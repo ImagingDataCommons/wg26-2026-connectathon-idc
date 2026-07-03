@@ -1,7 +1,7 @@
 # DICOM WG-26 Connectathon 2026 — IDC Slide-Microscopy Submission
 
-Toolkit and working area for contributing a curated **NCI Imaging Data Commons
-(IDC)** slide-microscopy dataset to the
+Toolkit and working area for contributing a curated [**NCI Imaging Data Commons
+(IDC)**](https://imaging.datacommons.cancer.gov) slide-microscopy dataset to the
 [DICOM WG-26 Digital Pathology Connectathon 2026](https://dicom-wg26-connectathons.github.io/2026/).
 
 This repository downloads a small set of public DICOM whole-slide-imaging (WSI)
@@ -9,16 +9,25 @@ objects from IDC, re-identifies them to the Connectathon naming convention,
 validates them against the Connectathon profile, and submits them to the
 participating image archives.
 
+> ### 🧩 Built with the IDC skill
+> The data discovery, selection, and download that made this work possible were
+> driven by the **[NCI Imaging Data Commons skill for AI agents](https://github.com/ImagingDataCommons/imaging-data-commons-skill)**
+> — an agent-ready interface to IDC (`idc-index` + IDC MCP server) that lets an
+> assistant query the 100+ TB public archive, filter to exactly the series
+> needed, and pull them down. It was instrumental in curating this dataset; see
+> [§8 How this repository was developed](#8-how-this-repository-was-developed).
+
 ---
 
 ## 1. What is being submitted
 
-**11 DICOM objects (~55 GB)** from IDC data release **v24**, all licensed
-**CC BY 4.0** (satisfies the Connectathon requirement that artifacts be
-shareable under CC-BY). The set was chosen to exercise interoperability across
-transfer syntaxes, an advanced presentation state, two annotation styles, and
-several stains. See [docs/idc_entry_selection.md](docs/idc_entry_selection.md)
-for the full selection rationale.
+**11 DICOM series — 250 SOP instances across 8 studies, ~55 GB** — from IDC data
+release **v24**, all licensed **CC BY 4.0** (satisfies the Connectathon
+requirement that artifacts be shareable under CC-BY). The set was chosen to
+exercise interoperability across transfer syntaxes, an advanced presentation
+state, two annotation styles, and several stains. See
+[docs/idc_entry_selection.md](docs/idc_entry_selection.md) for the full
+selection rationale.
 
 | # | Role in the set | Modality | Collection | Subject | Transfer syntax | Size |
 |--:|-----------------|:--------:|------------|:-------:|-----------------|-----:|
@@ -35,8 +44,13 @@ for the full selection rationale.
 | 11 | Non-H&E: ISH (EBER probe) | SM | cgci_htmcp_dlbcl | ISH01 | JPEG 2000 lossy | 69.3 MB |
 
 The **~52 GB fluorescence pair (#1, #2)** dominates the total; the other **9
-objects total ~3.3 GB**. Fluorescence is **confirmed in scope for 2026** by the
-organizers, so all 11 objects are submitted.
+series total ~3.3 GB**. Fluorescence is **confirmed in scope for 2026** by the
+organizers, so all 11 series are submitted.
+
+Each numbered row above is one DICOM **series** (a series may hold many SOP
+instances — e.g. row #1 is 216 instances of the fluorescence WSI pyramid);
+together the 11 series comprise **250 SOP instances**. Where this repo says "11
+objects" it means these 11 series.
 
 The authoritative machine-readable table (with the exact identity assignments)
 is generated to `data/manifest/wg26_selection.json` /
@@ -164,6 +178,9 @@ scripts/05_validate.sh
 .venv/bin/python scripts/06_submit_cstore.py sectra
 #   fallback:
 .venv/bin/python scripts/07_submit_stow.py proscia
+
+# 6. Verify what actually landed (QIDO-RS vs the manifest; exit 0 only if all match)
+.venv/bin/python scripts/08_verify_submission.py proscia
 ```
 
 After a successful submission, **email the project manager** describing what
@@ -281,17 +298,58 @@ docs/     The IDC selection rationale (idc_entry_selection.md). The Connectathon
           are NOT here — they are third-party and contain shared credentials;
           see the private companion repo (below).
 scripts/  Numbered pipeline (00 build → 01 download → 02 modify → 03 fix-wsi
-          → 04 fix-consistency → 05 validate → 06/07 submit) plus archives.json.
+          → 04 fix-consistency → 05 validate → 06/07 submit → 08 verify) plus
+          archives.json.
 dicom3tools/  Local dciodvfy/dcentvfy build with the WG26SP2025 IOD profiles
           (git-ignored; re-obtainable — see .gitignore).
 data/     manifest/ (identity table, tracked), idc_original/ (pristine download),
           submission/ (re-identified), validation/ (logs).  [git-ignored bulk]
 ```
 
-### Private companion repo
+### Companion repositories
+This **public** repository — the toolkit, manifests, and documentation — is at
+[`ImagingDataCommons/wg26-2026-connectathon-idc`](https://github.com/ImagingDataCommons/wg26-2026-connectathon-idc).
+
 Third-party connectathon source documents and the shared run-time credentials
 are archived separately, in a **private** repository:
 [`imagingdatacommons/wg26-2026-connectathon-idc-private`](https://github.com/imagingdatacommons/wg26-2026-connectathon-idc-private).
 This public repo hardcodes no secrets; the submission scripts read them from
 `WG26_STOW_USER` / `WG26_STOW_PASSWORD` / `WG26_BEARER_TOKEN` at run time (values
 recorded in the private repo's `CREDENTIALS.md`).
+
+---
+
+## 8. How this repository was developed
+
+This toolkit was built through an **AI-assisted, agentic workflow**: the IDC team
+directed the work and made every domain decision, while Claude Code (Anthropic's
+agentic coding CLI) performed the exploration, scripting, and iterative debugging
+under that direction. It is shared in that spirit — the numbered pipeline and the
+decision log are meant to make the whole process inspectable and reproducible.
+
+The work proceeded roughly as:
+
+1. **Data discovery & selection.** Candidate series were found by querying IDC
+   programmatically through the **[IDC skill](https://github.com/ImagingDataCommons/imaging-data-commons-skill)**
+   (`idc-index` + the IDC MCP server), then curated to cover the interoperability
+   dimensions the Connectathon needs — four transfer syntaxes, two annotation
+   styles, an advanced presentation state, and a range of stains. The rationale
+   is written up in [docs/idc_entry_selection.md](docs/idc_entry_selection.md).
+2. **Pipeline authoring.** The `00`–`07` scripts were written and refined
+   incrementally; each step does one narrow, reversible thing and preserves
+   UIDs and pixel data.
+3. **Validation-driven remediation.** Running the WG26SP2025 validators on the
+   *pristine* IDC download surfaced the pre-existing conformance and consistency
+   issues (see §2); each was diagnosed, confirmed as pre-existing (not introduced
+   by re-identification), and repaired with the smallest possible change
+   (`03_fix_wsi.py`, `04_fix_consistency.py`).
+4. **Submission & verification.** Objects are stored to each archive (C-STORE /
+   STOW-RS) and then independently confirmed via QIDO-RS; progress is tracked in
+   [SUBMISSION_STATUS.md](SUBMISSION_STATUS.md).
+
+Human domain experts reviewed and authorized all substantive choices — the
+naming convention, the remediation approach (including the flagged nominal
+`SliceThickness` placeholder), and every archive submission. **[CLAUDE.md](CLAUDE.md)**
+is the running decision log (what was decided and *why*); together with the git
+history and the numbered scripts it forms the reproducible record of how the
+dataset was produced.
