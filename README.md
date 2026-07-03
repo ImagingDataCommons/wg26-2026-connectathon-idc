@@ -276,11 +276,22 @@ only the DICOM-converted record that IDC actually distributes.
 
 ## 7. Repository layout
 ```
-docs/     Connectathon requirements (technical + logistic), network-config
-          spreadsheet, and the IDC selection rationale.
-scripts/  Numbered pipeline (00 build → 01 download → 02 modify → 06 fix-wsi
-          → 07 fix-consistency → 03 validate → 04/05 submit) plus archives.json.
-dicom3tools/  In-repo dciodvfy/dcentvfy build with the WG26SP2025 IOD profiles.
-data/     manifest/ (identity table), idc_original/ (pristine download),
+docs/     The IDC selection rationale (idc_entry_selection.md). The Connectathon
+          requirements, network-config spreadsheet, and per-vendor archive docs
+          are NOT here — they are third-party and contain shared credentials;
+          see the private companion repo (below).
+scripts/  Numbered pipeline (00 build → 01 download → 02 modify → 03 fix-wsi
+          → 04 fix-consistency → 05 validate → 06/07 submit) plus archives.json.
+dicom3tools/  Local dciodvfy/dcentvfy build with the WG26SP2025 IOD profiles
+          (git-ignored; re-obtainable — see .gitignore).
+data/     manifest/ (identity table, tracked), idc_original/ (pristine download),
           submission/ (re-identified), validation/ (logs).  [git-ignored bulk]
 ```
+
+### Private companion repo
+Third-party connectathon source documents and the shared run-time credentials
+are archived separately, in a **private** repository:
+[`imagingdatacommons/wg26-2026-connectathon-idc-private`](https://github.com/imagingdatacommons/wg26-2026-connectathon-idc-private).
+This public repo hardcodes no secrets; the submission scripts read them from
+`WG26_STOW_USER` / `WG26_STOW_PASSWORD` / `WG26_BEARER_TOKEN` at run time (values
+recorded in the private repo's `CREDENTIALS.md`).
