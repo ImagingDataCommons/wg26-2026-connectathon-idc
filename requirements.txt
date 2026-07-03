@@ -1,0 +1,8 @@
+# WG-26 2026 Connectathon — IDC submission toolchain
+# Create the environment with uv:
+#   uv venv --python 3.12 .venv
+#   uv pip install -r requirements.txt
+idc-index>=0.12
+pydicom>=3.0
+requests>=2.32
+openpyxl>=3.1

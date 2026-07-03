@@ -1,0 +1,78 @@
+{
+  "_comment": "Image Manager/Archive STORE endpoints for the WG-26 2026 Connectathon, parsed from docs/2026Connectathon_Network_ConfigurationSummary.xlsx (as of 2026-07-03). store_scp = DIMSE C-STORE SCP; stow_url = full DICOMweb STOW target (studies resource). Verify against the live spreadsheet before each submission — endpoints change during the event. Our calling AE title / source IP may need pre-registration with each archive: coordinate with the project manager.",
+  "calling_aet_default": "IDC",
+  "archives": {
+    "sectra": {
+      "name": "Sectra ImIT",
+      "store_scp": {"host": "4.165.25.244", "port": 5014, "aet": "SECTRA_PAT_SM01"},
+      "stow_url": "http://pacsapp.dicomwg26conn.external.uptime.sectra.com:5013/SectraStowRs/destination/SECTRA_PAT_SM01_104/studies",
+      "stow_tls": false,
+      "auth": "basic",
+      "stow_basic_auth_env": {"user": "WG26_STOW_USER", "password": "WG26_STOW_PASSWORD"},
+      "contact": "ruben.fernandes@sectra.com",
+      "whitelist": "source IP whitelisting required (DIMSE and DICOMweb)",
+      "notes": "Accepting SM and ANN since 2026-06-12. STOW is plain HTTP on :5013 with Basic Auth; obtain the username/password from the Sectra contact and export them as WG26_STOW_USER / WG26_STOW_PASSWORD (do NOT commit them). Send source IP to the contact for whitelisting."
+    },
+    "google": {
+      "name": "Google Healthcare API (via import adapter)",
+      "store_scp": {"host": "35.225.25.87", "port": 2579, "aet": "IMPORTADAPTER"},
+      "stow_url": "https://dicomwebproxy.app/dicomWeb/studies",
+      "stow_tls": true,
+      "auth": "none",
+      "contact": "philbrik@google.com",
+      "notes": "Per docs/archives Google doc: the connectathon proxy removes the OAuth requirement, so DICOMweb + DIMSE are open. Storage commitment supported. Overwriting an existing instance via STOW FAILS - delete your own instances first to replace."
+    },
+    "proscia": {
+      "name": "Proscia",
+      "store_scp": {"host": "proscia-connectathon.com", "port": 11112, "aet": "PROSCIA_SERVER"},
+      "stow_url": "https://proscia-connectathon.com/dicom-web/studies",
+      "stow_tls": true,
+      "auth": "none",
+      "contact": "eric.martin@proscia.com",
+      "whitelist": "DIMSE: our AE Title + callback host/IP/port must be whitelisted. Basic DICOMweb store needs no auth; OIDC endpoints optional.",
+      "notes": "QIDO needs at least PatientID=*; accepts DICOM keyword tags only (not hex)."
+    },
+    "bmd": {
+      "name": "BMD Software",
+      "store_scp": {"host": "5.39.15.120", "port": 104, "aet": "PACSCENTER"},
+      "stow_url": "https://dicom-wg26.bmd-software.com/ext/dicom-web/studies",
+      "stow_tls": true,
+      "auth": "none",
+      "notes": ""
+    },
+    "agfa": {
+      "name": "AGFA HealthCare",
+      "store_scp": {"host": "13.43.180.128", "port": 104, "aet": "VENCON"},
+      "stow_url": null,
+      "stow_tls": false,
+      "auth": "none",
+      "contact": "peter.luyckx@agfa.com",
+      "whitelist": "external IP(s) + AET must be whitelisted (required). Email the contact.",
+      "notes": "C-STORE only for storing (no STOW). DICOMweb is QIDO/WADO only, HTTPS + Keycloak bearer token, needs FQDN ei-service.med.agfa.be DNS resolution. Per docs/archives AGFA doc."
+    },
+    "ntunhs": {
+      "name": "NTUNHS (Raccoon)",
+      "store_scp": {"host": "59.120.192.240", "port": 11112, "aet": "RACCOONSCP"},
+      "stow_url": "https://raccoon.dicom.org.tw/dicom-web/studies",
+      "stow_tls": true,
+      "auth": "none",
+      "notes": ""
+    },
+    "visage": {
+      "name": "Visage Imaging",
+      "store_scp": {"host": "35.238.112.229", "port": 2010, "aet": "VISAGE_DAP"},
+      "stow_url": null,
+      "stow_tls": false,
+      "auth": "jwt",
+      "notes": "STOW URL was a placeholder ('url string') in the config - not ready; use C-STORE. QIDO requires JWT auth."
+    },
+    "infinitt": {
+      "name": "Infinitt",
+      "store_scp": {"host": "121.170.194.140", "port": 5080, "aet": "INFACQ_WSI"},
+      "stow_url": "http://121.170.194.140:88/dicomweb/studies",
+      "stow_tls": false,
+      "auth": "none",
+      "notes": ""
+    }
+  }
+}

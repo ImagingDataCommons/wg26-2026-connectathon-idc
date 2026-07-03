@@ -1,0 +1,36 @@
+# Bulk DICOM data and logs (re-downloadable from IDC via the manifest)
+*.dcm
+data/idc_original/
+data/submission/
+data/validation/
+
+# uv-managed virtual environment
+.venv/
+
+# Third-party dicom3tools build (platform-specific binaries + snapshot zip,
+# ~126 MB). Re-obtainable from https://www.dclunie.com/dicom3tools.html;
+# needed locally for validation (WG26SP2025 IODs). Point $DCIODVFY / $DCENTVFY
+# at your own build, or drop a build here — this path is what 05_validate.sh
+# uses by default.
+dicom3tools/
+
+# Python / OS cruft
+__pycache__/
+*.pyc
+.DS_Store
+
+# Third-party connectathon source documents (requirements, network-config
+# spreadsheet, per-archive vendor docs). Not ours to redistribute and they
+# contain shared credentials + participant contacts — keep local, never commit.
+# Obtain from the organizers / Google Group. (Our own docs/*.md stay tracked.)
+docs/*.docx
+docs/*.xlsx
+docs/archives/
+
+# Submission credentials must never be committed — supply them at run time via
+# WG26_STOW_USER / WG26_STOW_PASSWORD / WG26_BEARER_TOKEN environment variables.
+.env
+*.secret
+
+# Keep the small tracked manifest artifacts
+!data/manifest/
