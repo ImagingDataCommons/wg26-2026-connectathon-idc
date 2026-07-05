@@ -63,8 +63,9 @@
       "store_scp": {"host": "35.238.112.229", "port": 2010, "aet": "VISAGE_DAP"},
       "stow_url": null,
       "stow_tls": false,
+      "qido_url": "https://35.238.112.229/wado",
       "auth": "jwt",
-      "notes": "STOW URL was a placeholder ('url string') in the config - not ready; use C-STORE. QIDO requires JWT auth."
+      "notes": "Store: C-STORE only (STOW URL was a placeholder 'url string' in the config; DIMSE store port 2010 is OPEN - C-ECHO+C-STORE with AET IDC accepted 2026-07-05, no whitelisting). Verify: QIDO-RS base is https://35.238.112.229/wado (probed 2026-07-05: /wado/studies -> 401 WWW-Authenticate: Bearer, application/dicom+json), needs a JWT (export WG26_BEARER_TOKEN) and --insecure (cert is for the hostname, not the bare IP). Interop caveat: the Store SCP refuses the JPEG 2000 presentation context for VL WSI (accepts Little Endian Explicit only)."
     },
     "infinitt": {
       "name": "Infinitt",
