@@ -57,6 +57,19 @@ def first(ds, tag, default=None):
     return v
 
 
+def pn_norm(s):
+    """Normalize a DICOM PersonName for comparison by dropping trailing empty
+    components and component groups, which are semantically insignificant per
+    PS3.5 (VR PN). Some archives echo back e.g. '26CN^EXT_..._HE02^^^' (padding
+    the empty middle/prefix/suffix); that must compare equal to '26CN^EXT_..._HE02'."""
+    if s is None:
+        return s
+    groups = [g.rstrip("^") for g in s.split("=")]
+    while len(groups) > 1 and groups[-1] == "":
+        groups.pop()
+    return "=".join(groups)
+
+
 def load_manifest(path):
     """Aggregate the identity map into {StudyInstanceUID: {...}} (one study may
     have several series rows, e.g. image + annotation + presentation state)."""
@@ -141,7 +154,7 @@ def verify_study(base, suid, expect, ctx):
     exp_inst_total = sum(s["instances"] for s in exp_series.values())
 
     problems = []
-    if got_name != expect["patient_name"]:
+    if pn_norm(got_name) != pn_norm(expect["patient_name"]):
         problems.append(f"PatientName {got_name!r} != {expect['patient_name']!r}")
     if got_id != expect["patient_id"]:
         problems.append(f"PatientID {got_id!r} != {expect['patient_id']!r}")
