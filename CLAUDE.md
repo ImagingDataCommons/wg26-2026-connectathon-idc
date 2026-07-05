@@ -47,7 +47,7 @@ objects — as reference/test material for the Connectathon. Pipeline:
   dcmsend's default (`--decompress-lossless`) would silently decompress the
   JPEG 2000 Lossless series if a peer's accepted context lacks it; `-dn` stores
   as-is or fails visibly. Calling **AE Title = `IDC`**. Per-archive open-vs-
-  whitelisting plan: `SUBMISSION_TARGETS.md`.
+  whitelisting plan: `SUBMISSION_TARGETS.md` (in the private companion repo).
 - **WSI conformance remediation (`03_fix_wsi.py`).** The IDC-converted SM
   objects (all except the Mirax-converted bone-marrow) fail `-profile WG26SP2025`
   with **pre-existing** errors (confirmed on the pristine download): missing
@@ -116,7 +116,7 @@ data/     manifest/, idc_original/, submission/, validation/
 - **Whitelisting**: register calling AE Title `IDC` + our source IP with the
   archives that need it (Sectra, AGFA, Visage, Google adapter). Obtain OAuth2
   token (Google STOW) / JWT (Visage) if using their DICOMweb. See
-  `SUBMISSION_TARGETS.md`.
+  `SUBMISSION_TARGETS.md` (in the private companion repo).
 - **`<source>` token scheme**: currently scanner-vendor. Confirm acceptable, or
   switch (e.g. collection-based) via `STUDY_SOURCE` in `00_build_selection.py`.
 - **UID collision**: archives may already hold the public IDC copy (same

@@ -140,8 +140,9 @@ as encoded, or the store fails visibly — never silently transcoded (dcmsend's
 default would decompress lossless data if the peer's context lacks that syntax).
 
 Endpoints are parsed into [scripts/archives.json](scripts/archives.json), and
-the per-archive plan (open vs whitelisting-required) is in
-[SUBMISSION_TARGETS.md](SUBMISSION_TARGETS.md) — **verify against the live
+the per-archive plan (open vs whitelisting-required) is in `SUBMISSION_TARGETS.md`
+in the [private companion repo](https://github.com/imagingdatacommons/wg26-2026-connectathon-idc-private)
+(it carries participant/vendor contacts) — **verify against the live
 spreadsheet before each submission**, as endpoints change during the event.
 Our calling AE Title is **`IDC`**.
 
@@ -202,7 +203,7 @@ was uploaded (required of Evidence Creators).
 - [x] Fluorescence (#1/#2) confirmed in scope for 2026.
 - [x] Participant token `IDC` and calling AE Title `IDC` confirmed.
 - [ ] Register calling AE Title `IDC` + our source IP with the whitelisting
-      archives (see [SUBMISSION_TARGETS.md](SUBMISSION_TARGETS.md)).
+      archives (see `SUBMISSION_TARGETS.md` in the private companion repo).
 
 See [CLAUDE.md](CLAUDE.md) for decisions, open items, and the event timeline
 (key dates: **round-1 submission by 18 Jul 2026**, final by 14 Aug 2026).
@@ -345,7 +346,8 @@ The work proceeded roughly as:
    (`03_fix_wsi.py`, `04_fix_consistency.py`).
 4. **Submission & verification.** Objects are stored to each archive (C-STORE /
    STOW-RS) and then independently confirmed via QIDO-RS; progress is tracked in
-   [SUBMISSION_STATUS.md](SUBMISSION_STATUS.md).
+   `SUBMISSION_STATUS.md` in the private companion repo (it records our outbound
+   source IP and per-archive state).
 
 Human domain experts reviewed and authorized all substantive choices — the
 naming convention, the remediation approach (including the flagged nominal
