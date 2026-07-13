@@ -103,7 +103,12 @@ def qido_base(a, override):
 
 
 def auth_for(a):
-    headers = {"Accept": "application/dicom+json"}
+    # Set an explicit User-Agent: some archives front DICOMweb with a WAF
+    # (e.g. Sectra's Azure Application Gateway runs the OWASP CRS, whose rule
+    # 913100 blocks the default python-requests / Python-urllib agents as
+    # "known bots" -> HTTP 403 before auth is even evaluated). A descriptive UA
+    # passes. Harmless for archives without a WAF.
+    headers = {"Accept": "application/dicom+json", "User-Agent": "WG26-IDC-verify/1.0"}
     auth = None
     if a["auth"] == "basic":
         user = os.environ.get("WG26_STOW_USER")

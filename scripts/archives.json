@@ -7,11 +7,13 @@
       "store_scp": {"host": "4.165.25.244", "port": 5014, "aet": "SECTRA_PAT_SM01"},
       "stow_url": "http://pacsapp.dicomwg26conn.external.uptime.sectra.com:5013/SectraStowRs/destination/SECTRA_PAT_SM01_104/studies",
       "stow_tls": false,
+      "qido_url": "https://pacsapp.dicomwg26conn.external.uptime.sectra.com/SectraQidoRs/mrnissuers/all/studies",
+      "wado_url": "https://pacsapp.dicomwg26conn.external.uptime.sectra.com/SectraWadoRs/mrnissuers/all/studies",
       "auth": "basic",
       "stow_basic_auth_env": {"user": "WG26_STOW_USER", "password": "WG26_STOW_PASSWORD"},
       "contact": "ruben.fernandes@sectra.com",
       "whitelist": "source IP whitelisting required (DIMSE and DICOMweb)",
-      "notes": "Accepting SM and ANN since 2026-06-12. STOW is plain HTTP on :5013 with Basic Auth; obtain the username/password from the Sectra contact and export them as WG26_STOW_USER / WG26_STOW_PASSWORD (do NOT commit them). Send source IP to the contact for whitelisting."
+      "notes": "Accepting SM and ANN since 2026-06-12. Store and query live on different hosts/ports: STOW is plain HTTP on :5013 and DIMSE on :5014, but QIDO/WADO are HTTPS on :443 (SectraQidoRs / SectraWadoRs). qido_url is set explicitly because deriving it from stow_url (the 08_verify default) would query the STOW destination path and fail. Basic Auth on all DICOMweb; the username/password are on file in the private companion repo's CREDENTIALS.md - export them as WG26_STOW_USER / WG26_STOW_PASSWORD (do NOT commit them here). The :443 cert validates for the FQDN, so no --insecure is needed. Source IP whitelisting IS required (email the contact); until it is live, :5013/:5014/:104 silently drop (NSG) and :443 returns HTTP 403 from Microsoft-Azure-Application-Gateway/v2 on every path incl. '/'. WAF gotcha: that Azure App Gateway (OWASP CRS) 403s the default python-requests User-Agent as a bot, so 08_verify sends an explicit User-Agent. SUBMITTED + QIDO-verified 250/250 (8 studies) on 2026-07-13 via C-STORE - first archive to take the full set over DIMSE."
     },
     "google": {
       "name": "Google Healthcare API (via import adapter)",
